@@ -38,13 +38,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var mNext = ""
     var mPrev = ""
     var mAdapter: ImageRecycleAdapter? = null
-    var curGallery : String = "-1"
+    var curGallery: String = "-1"
     private val visibleThreshold = 4
     private var lastVisibleItem: Int = 0
     private var totalItemCount: Int = 0
-
     var state = "0"
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +66,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val metrics = DisplayMetrics()
 
         val imageView = findViewById<ImageView>(R.id.imgLogo)
-        val imgMid  = imageView.layoutParams as  RelativeLayout.LayoutParams
+        val imgMid = imageView.layoutParams as RelativeLayout.LayoutParams
         imgMid.marginEnd = 50
         imageView.layoutParams = imgMid
 
@@ -123,7 +121,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         pDialog.show()
         LoadIcons(this, pDialog).execute()
         ////////// get like_Array //////////////
-        LoadLikes(this,pDialog).execute()
+        LoadLikes(this, pDialog).execute()
         /////////////////////////////////////////
     }
 
@@ -163,8 +161,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (id) {
             R.id.nav_auto_bg -> {
                 val intent = Intent(this, AutoBackgroundActivity::class.java)
-               // startActivity(intent)
-                startActivityForResult(intent,1)
+                // startActivity(intent)
+                startActivityForResult(intent, 1)
             }
         }
 
@@ -249,7 +247,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 (context as MainActivity).mAdapter = null
                                 context.mNext = ""
                                 context.curGallery = v.tag as String
-                                LoadPics(context,pDialog).execute()
+                                LoadPics(context, pDialog).execute()
                                 //////////////////  mohammad /////////////////////
 //                                txtGallery.currentTextColor == Color.RED
                                 txtGallery.setTextColor(Color.BLACK)
@@ -258,12 +256,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             area.addView(v)
                         }
                     }
-                LoadPics(context, pDialog.get()!!).execute()
+                LoadLikes(context, pDialog.get()!!).execute()
             }
         }
     }
 
-    private class LoadPics(context: Activity, dialog: ProgressDialog) : AsyncTask<String, String, String>() {
+    private class LoadPics(context: Activity, dialog: ProgressDialog, val mLikeds: ArrayList<String>? = null) : AsyncTask<String, String, String>() {
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
         var parent: WeakReference<Activity> = WeakReference(context)
@@ -278,7 +276,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 params.add(BasicNameValuePair("gallery", context.curGallery))
             var url = context.getString(R.string.server_address) +
                     "/api/photos/"
-            if (p0.isNotEmpty()){
+            if (p0.isNotEmpty()) {
                 url = p0[0]!!
             }
 
@@ -301,6 +299,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val tempFullImage = ArrayList<String>()
                     val titles = ArrayList<String>()
                     val subtitles = ArrayList<String>()
+                    val iDs = ArrayList<String>()
                     for (i in 0 until items!!.length()) {
                         val item = MyJsonObject(items!!.getJSONObjectSafe(i))
 //                        temp.add(context.getString(R.string.server_address) + item.getStringSafe("image"))
@@ -308,13 +307,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         tempFullImage.add(context.getString(R.string.server_address) + item.getStringSafe("image"))
                         titles.add(item.getStringSafe("title"))
                         subtitles.add(item.getStringSafe("subtitle"))
+                        iDs.add(item.getStringSafe("pk"))
                     }
                     val mRecyclerView = context.findViewById<RecyclerView>(R.id.grdCollection)
                     val llm = LinearLayoutManager(context)
                     mRecyclerView.layoutManager = llm
                     if (context.mAdapter == null) {
 //                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
-                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,objectId)
+                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles, mLikeds, iDs)
                         mRecyclerView.adapter = context.mAdapter
                         context.mAdapter!!.mListener = context
                         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -333,7 +333,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             }
                         })
                     } else
-                        context.mAdapter!!.setIDs(temp, titles, subtitles)
+                        context.mAdapter!!.setIDs(temp, titles, subtitles, iDs)
                 }
             }
         }
@@ -359,21 +359,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            pDialog.get()!!.dismiss()
 
-            if (itemsLike != null && !itemsLike!!.isNull){
-           // val pk = ArrayList<String>()
-            val objectId = ArrayList<String>()
-                val objectId2 = ArrayList<Boolean>()
-
+            if (itemsLike != null && !itemsLike!!.isNull) {
+                val mLikeds = ArrayList<String>()
                 for (i in 0 until itemsLike!!.length()) {
                     val item = MyJsonObject(itemsLike!!.getJSONObjectSafe(i))
                     if (!item.isNull) {
-                   //      pk.add(item.getStringSafe("pk"))
-                        objectId2.add(item.getBoolean("object_id"))
-                        objectId.add(item.getStringSafe("object_id"))
+                        //      pk.add(item.getStringSafe("pk"))
+                        mLikeds.add(item.getStringSafe("object_id"))
                     }
                 }
+                LoadPics(parentLike.get()!!, pDialog.get()!!, mLikeds).execute()
             }
         }
     }
@@ -382,31 +378,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-               // val State = data.getStringExtra("keyIdentifier")
-              //  val switch = findViewById<ImageView>(R.id.drawer_switch)
-              //  val switch = ImageView(this)
+                // val State = data.getStringExtra("keyIdentifier")
+                //  val switch = findViewById<ImageView>(R.id.drawer_switch)
+                //  val switch = ImageView(this)
 
-                    // get your data here
+                // get your data here
                 //    Toast.makeText(this, "Hi there! This is a Toast.", Toast.LENGTH_SHORT).show()
                 state = data.getStringExtra("keyIdentifier")
-                    if (state =="0"){
-                        Toast.makeText(this, "Hi there! This is a stae0 .", Toast.LENGTH_SHORT).show()
-                   //     switch.setImageResource(R.drawable.autobg_active)
-                        switchBackground(this,state)
-                    }
-                    if (state =="1"){
-                        Toast.makeText(this, "Hi there! This is a stae1.", Toast.LENGTH_SHORT).show()
+                if (state == "0") {
+                    Toast.makeText(this, "Hi there! This is a stae0 .", Toast.LENGTH_SHORT).show()
+                    //     switch.setImageResource(R.drawable.autobg_active)
+                    switchBackground(this, state)
+                }
+                if (state == "1") {
+                    Toast.makeText(this, "Hi there! This is a stae1.", Toast.LENGTH_SHORT).show()
 //                        switch.setImageResource(R.drawable.double_down)
-                        switchBackground(this,state)
-                    }
+                    switchBackground(this, state)
+                }
             }
         }
     }
 
-    private fun switchBackground (context: Context,state: String){
-          val switch = ImageView(context)
-        if (state=="0")
-        switch.setImageResource(R.drawable.autobg_active)
+    private fun switchBackground(context: Context, state: String) {
+        val switch = ImageView(context)
+        if (state == "0")
+            switch.setImageResource(R.drawable.autobg_active)
         else
             switch.setImageResource(R.drawable.double_down)
     }

@@ -26,13 +26,14 @@ import com.example.no1.photongallery.utils.MyJsonObject
 import org.apache.http.NameValuePair
 import java.lang.ref.WeakReference
 
-class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
+class ImageRecycleAdapter(private val mContext: Context, private var mURLs: ArrayList<String>,
                           private var mType: Int, private var mTitles: ArrayList<String>,
-                          private var mSubtitles: ArrayList<String> , private var mLIKEs:ArrayList<Boolean>) :
+                          private var mSubtitles: ArrayList<String>, private var mLIKEs: ArrayList<String>?,
+                          private var mIDs : ArrayList<String>) :
         RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {
 
 
-/*class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
+/*class ImageRecycleAdapter(private val mContext: Context, private var mURLs: ArrayList<String>,
                           private var mType: Int, private var mTitles: ArrayList<String>,
                           private var mSubtitles: ArrayList<String>) :
         RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {*/
@@ -70,10 +71,10 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
     }
 
     @SuppressLint("ClickableViewAccessibility")
- /*   private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
-                            pSubtitle: String) {*/
-        private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
-                                pSubtitle: String, pLike:Boolean, position:Int) {
+    /*   private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
+                               pSubtitle: String) {*/
+    private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
+                            pSubtitle: String, pLike: Boolean, position: Int) {
         val imgOne = area.findViewById<ImageView>(R.id.imgOne)
         Picasso.with(mContext).load(url).fit().centerCrop().into(imgOne)
 
@@ -94,7 +95,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
         imgOne.setOnClickListener({ _ ->
             val imgMask = area.findViewWithTag<ImageView>("mask")
             if (imgMask == null) {
-                if (prevArea!=null){
+                if (prevArea != null) {
                     prevArea!!.removeView(prevArea!!.findViewWithTag<ImageView>("mask"))
                     prevArea!!.removeView(prevArea!!.findViewWithTag("like"))
                     prevArea!!.removeView(prevArea!!.findViewWithTag("subtitle"))
@@ -117,27 +118,26 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                 area.addView(mask)
                 mask.startAnimation(anim)
 
-               ///////////////////// Mohammad /////////////////////////////////////////////
-           /*     mask.setOnClickListener {
-                    if (mLIKEs.contains((mIDs.get(itemCount)))) {
-                        mLIKEs.remove((mIDs.get(itemCount)))
-                        likePost(false, (mIDs.get(itemCount)).toInt())
-                    }else {
-                        mLIKEs.add((mIDs.get(itemCount)).toString())
-                        likePost(true, (mIDs.get(itemCount)).toInt())
+                ///////////////////// Mohammad /////////////////////////////////////////////
+                /*     mask.setOnClickListener {
+                         if (mLIKEs.contains((mURLs.get(itemCount)))) {
+                             mLIKEs.remove((mURLs.get(itemCount)))
+                             likePost(false, (mURLs.get(itemCount)).toInt())
+                         }else {
+                             mLIKEs.add((mURLs.get(itemCount)).toString())
+                             likePost(true, (mURLs.get(itemCount)).toInt())
+                         }
+                     }*/
+
+
+                mask.setOnClickListener {
+                    if (pLike) {
+                        changeLike(false, position)
+                    } else {
+                        changeLike(true, position)
+
                     }
-                }*/
-
-
-                     mask.setOnClickListener {
-                   if (pLike) {
-                       changeLike(false,position)
-                   }else {
-                       changeLike(true,position)
-
-                   }
-               }
-
+                }
 
 
                 //////////////////////////////////////////////////////////////////////////////////
@@ -153,12 +153,12 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                 like.layoutParams = params
 
                 ////////////////////////  Mohammad  //////////////////////
-               /* if (mLIKEs.contains((mIDs.get(itemCount))))
+                /* if (mLIKEs.contains((mURLs.get(itemCount))))
 
-                    like.setImageResource(R.drawable.like_active)
-                else
-                    like.setImageResource(R.drawable.like_diactive)
-*/
+                     like.setImageResource(R.drawable.like_active)
+                 else
+                     like.setImageResource(R.drawable.like_diactive)
+ */
 
                 if (pLike)
                     like.setImageResource(R.drawable.like_active)
@@ -166,13 +166,12 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                     like.setImageResource(R.drawable.like_diactive)
 
 
-
                 //////////////////////////////////////////////
 
-     /*           if (Math.random() < 0.7)
-                    like.setImageResource(R.drawable.like_diactive)
-                else
-                    like.setImageResource(R.drawable.like_active)*/
+                /*           if (Math.random() < 0.7)
+                               like.setImageResource(R.drawable.like_diactive)
+                           else
+                               like.setImageResource(R.drawable.like_active)*/
 
                 area.addView(like)
                 like.startAnimation(anim)
@@ -239,12 +238,12 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                 threeDot.startAnimation(anim)
                 threeDot.setOnClickListener({
                     val temp = area.findViewWithTag<ImageView>("wallpaper")
-                    if (temp==null) {
+                    if (temp == null) {
 
                         val wallpaper = ImageView(mContext)
                         wallpaper.id = R.id.btnWallpaper
                         wallpaper.tag = "wallpaper"
-                        params = RelativeLayout.LayoutParams(px*2, px*2)
+                        params = RelativeLayout.LayoutParams(px * 2, px * 2)
                         params.addRule(RelativeLayout.ABOVE, R.id.imgMenuShort)
                         params.setMargins(0, 0, 0, 5)
                         params.marginEnd = 8
@@ -262,7 +261,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                         val share = ImageView(mContext)
                         share.id = R.id.btnShare
                         share.tag = "share"
-                        params = RelativeLayout.LayoutParams(px*2, px*2)
+                        params = RelativeLayout.LayoutParams(px * 2, px * 2)
                         params.addRule(RelativeLayout.ABOVE, R.id.btnWallpaper)
                         params.setMargins(0, 0, 0, 5)
                         params.marginEnd = 8
@@ -275,7 +274,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                         val print = ImageView(mContext)
                         print.id = R.id.btnPrint
                         print.tag = "print"
-                        params = RelativeLayout.LayoutParams(px*2, px*2)
+                        params = RelativeLayout.LayoutParams(px * 2, px * 2)
                         params.addRule(RelativeLayout.ABOVE, R.id.btnShare)
                         params.setMargins(0, 0, 0, 5)
                         params.marginEnd = 8
@@ -284,7 +283,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                         print.setImageResource(R.drawable.home_print)
                         area.addView(print)
                         print.startAnimation(anim)
-                    }else{
+                    } else {
                         area.removeView(area.findViewWithTag("share"))
                         area.removeView(area.findViewWithTag("print"))
                         area.removeView(area.findViewWithTag("wallpaper"))
@@ -325,15 +324,15 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
         var index = 0
         for (i in 0 until holder.parent.childCount) {
             val area = holder.parent.getChildAt(i)
-            if (area is RelativeLayout && mSizes[mType] * holder.adapterPosition + index < mIDs.size) {
-               /* fillWithUrl(area, mIDs[mSizes[mType] * holder.adapterPosition + index],
-                        mTitles[mSizes[mType] * holder.adapterPosition + index],
-                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++])*/
+            if (area is RelativeLayout && mSizes[mType] * holder.adapterPosition + index < mURLs.size) {
+                /* fillWithUrl(area, mURLs[mSizes[mType] * holder.adapterPosition + index],
+                         mTitles[mSizes[mType] * holder.adapterPosition + index],
+                         mSubtitles[mSizes[mType] * holder.adapterPosition + index++])*/
 
-                fillWithUrl(area, mIDs[mSizes[mType] * holder.adapterPosition + index],
+                fillWithUrl(area, mURLs[mSizes[mType] * holder.adapterPosition + index],
                         mTitles[mSizes[mType] * holder.adapterPosition + index],
                         mSubtitles[mSizes[mType] * holder.adapterPosition + index++]
-                        ,mLIKEs[mSizes[mType] * holder.adapterPosition + index],mType)
+                        , mLIKEs!!.contains(mIDs[mSizes[mType] * holder.adapterPosition + index]), mType)
 
             }
         }
@@ -344,20 +343,18 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
     }
 
     override fun getItemCount(): Int {
-        return ((mIDs.size - 1) / mSizes[mType]) + 1
+        return ((mURLs.size - 1) / mSizes[mType]) + 1
     }
 
-    fun setIDs(ids: ArrayList<String>, titles: ArrayList<String>, subtitles: ArrayList<String>,likes: ArrayList<Boolean>) {
-        for (id in ids)
-            mIDs.add(id)
+    fun setIDs(urls: ArrayList<String>, titles: ArrayList<String>, subtitles: ArrayList<String>, ids: ArrayList<String>) {
+        for (url in urls)
+            mURLs.add(url)
         for (title in titles)
             mTitles.add(title)
         for (subtitle in subtitles)
             mSubtitles.add(subtitle)
-        for (like in likes)
-            mLIKEs.add(like)
-
-
+        for (id in ids)
+            mIDs.add(id)
         notifyDataSetChanged()
     }
 
@@ -366,13 +363,12 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
         val type = mType
     }
 
-    fun changeLike(state:Boolean,position: Int){
-        if (state)
-        {
-            mLIKEs[position]=false
+    fun changeLike(state: Boolean, position: Int) {
+        if (state) {
+            //mLIKEs[position]=false
             ///  send like state to server
-        }else{
-            mLIKEs[position]=true
+        } else {
+            //mLIKEs[position]=true
             ///  send dislike state to server
         }
     }
@@ -399,7 +395,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
             super.onPostExecute(result)
             pDialog.get()!!.dismiss()
 
-                }
+        }
     }
 
 }
