@@ -398,7 +398,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun switchBackground (context: Context,state: String){
+    private fun switchBackground (context: Context,state: String){
           val switch = ImageView(context)
         if (state=="0")
         switch.setImageResource(R.drawable.autobg_active)

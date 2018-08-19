@@ -120,10 +120,10 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                 mask.setOnClickListener {
                     if (mLIKEs.contains((mIDs.get(itemCount)))) {
                         mLIKEs.remove((mIDs.get(itemCount)))
-                        like_post(false, (mIDs.get(itemCount)).toInt())
+                        likePost(false, (mIDs.get(itemCount)).toInt())
                     }else {
                         mLIKEs.add((mIDs.get(itemCount)).toString())
-                        like_post(true, (mIDs.get(itemCount)).toInt())
+                        likePost(true, (mIDs.get(itemCount)).toInt())
                     }
                 }
                //////////////////////////////////////////////////////////////////////////////////
@@ -335,16 +335,14 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
         val type = mType
     }
 
-    fun like_post(state:Boolean,position: Int){
+    fun likePost(state:Boolean,position: Int){
         if (state==true)
         {
             ///  send like state to server
         }else{
 
         }
-
     }
-
 
     private class send_data_to_server(context: Activity, dialog: ProgressDialog) : AsyncTask<String, String, String>() {
         var result_like: MyJsonObject? = null
