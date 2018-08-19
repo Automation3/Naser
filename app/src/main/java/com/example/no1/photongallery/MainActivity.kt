@@ -252,7 +252,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 LoadPics(context,pDialog).execute()
                                 //////////////////  mohammad /////////////////////
 //                                txtGallery.currentTextColor == Color.RED
-                                txtGallery.setTextColor(Color.RED)
+                                txtGallery.setTextColor(Color.BLACK)
                                 //////////////////////////////////////////////////
                             })
                             area.addView(v)
@@ -298,12 +298,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             context.runOnUiThread {
                 if (items != null && !items!!.isNull) {
                     val temp = ArrayList<String>()
+                    val tempFullImage = ArrayList<String>()
                     val titles = ArrayList<String>()
                     val subtitles = ArrayList<String>()
                     for (i in 0 until items!!.length()) {
                         val item = MyJsonObject(items!!.getJSONObjectSafe(i))
 //                        temp.add(context.getString(R.string.server_address) + item.getStringSafe("image"))
                         temp.add(context.getString(R.string.server_address) + item.getStringSafe("thumbnail"))
+                        tempFullImage.add(context.getString(R.string.server_address) + item.getStringSafe("image"))
                         titles.add(item.getStringSafe("title"))
                         subtitles.add(item.getStringSafe("subtitle"))
                     }

@@ -13,7 +13,6 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
@@ -26,7 +25,7 @@ class PictureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture)
 
-        lateinit var Mohammad_bitmap :Bitmap
+        lateinit var mohammadBitmap :Bitmap
 
         val wallpaper = findViewById<ImageView>(R.id.btnWallpaper)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -35,37 +34,33 @@ class PictureActivity : AppCompatActivity() {
         wallpaper.bringToFront()
         val imageView = findViewById<SubsamplingScaleImageView>(R.id.imgPicture)
 
-        val download_image = findViewById(R.id.btnDownload) as ImageView
-        download_image.setOnClickListener {
+        val downloadImage = findViewById<ImageView>(R.id.btnDownload)
+        downloadImage.setOnClickListener {
             //  Download image
-            SAVE_TO_GALLERY(Mohammad_bitmap)
+            saveToGallery(mohammadBitmap)
             Toast.makeText(this, "عکس مورد نظر در گالری ذخیره شد", Toast.LENGTH_SHORT).show()
-
         }
 
-        val btnWallpaper2_ = findViewById(R.id.btnWallpaper2) as ImageView
-        btnWallpaper2_.setOnClickListener {
+        val btnWallpaper2 = findViewById<ImageView>(R.id.btnWallpaper2)
+        btnWallpaper2.setOnClickListener {
 
-            SET_ZOOMED_IMAGE_TO_BACKGROUND(Mohammad_bitmap)
+            setZoomedImageToBackground(mohammadBitmap)
             Toast.makeText(this, "تصویر زمینه گوشی شما عوض شد", Toast.LENGTH_SHORT).show()
         }
 
-        val close = findViewById(R.id.btnClose) as ImageView
+        val close = findViewById<ImageView>(R.id.btnClose)
         close.setOnClickListener {
-
             finish()
         }
 
-
-         val description_btn = findViewById(R.id.btnDescription) as ImageView
-        description_btn.setOnClickListener {
-
+         val btnDescription = findViewById<ImageView>(R.id.btnDescription)
+        btnDescription.setOnClickListener {
          }
 
         val t = object : Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom) {
                 if (bitmap != null) {
-                     Mohammad_bitmap = bitmap
+                    mohammadBitmap = bitmap
 
                     imageView.setImage(ImageSource.bitmap(bitmap))
                     val zoom = Math.min((bitmap.width - 1) / imageView.width + 1,
@@ -85,26 +80,16 @@ class PictureActivity : AppCompatActivity() {
         Picasso.with(this).load(intent.getStringExtra("address")).into(t)
     }
 
-//     fun SET_ZOOMED_IMAGE_TO_BACKGROUND(imageView:SubsamplingScaleImageView){
-//     fun SET_ZOOMED_IMAGE_TO_BACKGROUND(imageView:ImageView){
-    fun SET_ZOOMED_IMAGE_TO_BACKGROUND(bitmap: Bitmap){
+    private  fun setZoomedImageToBackground(bitmap: Bitmap){
 
-//         val bmp =  imageView.getDrawingCache()
-         val   myWallpaperManager: WallpaperManager
-         myWallpaperManager = WallpaperManager.getInstance(getApplicationContext())
-//         myWallpaperManager.setBitmap(bmp);
+        /* val   myWallpaperManager: WallpaperManager
+         myWallpaperManager = WallpaperManager.getInstance(getApplicationContext())*/
+        val myWallpaperManager = WallpaperManager.getInstance(this)
          myWallpaperManager.setBitmap(bitmap);
      }
 
+     private fun saveToGallery(bitmap: Bitmap){
 
-//    fun SAVE_TO_GALLERY(imageView:SubsamplingScaleImageView){
-//     fun SAVE_TO_GALLERY(imageView:ImageView){
-     fun SAVE_TO_GALLERY(bitmap: Bitmap){
-
-//        val draw = imageView.drawingCache as BitmapDrawable
-//        val draw = imageView.getDrawingCache(true)  as BitmapDrawable
-//        val draw = imageView.getDrawable() as BitmapDrawable
-//        val bitmap = draw.bitmap
         var outStream: FileOutputStream? = null
         val sdCard = Environment.getExternalStorageDirectory()
         val dir = File(sdCard.getAbsolutePath() + "/DCIM")
@@ -115,18 +100,10 @@ class PictureActivity : AppCompatActivity() {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
         outStream!!.flush()
         outStream!!.close()
-
-
-//    Additionally, in order to refresh the gallery and to view the image there:
-    val intent : Intent
-    intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-    intent.setData(Uri.fromFile(outFile));
-    sendBroadcast(intent);
-
-    }
-
+        //    Additionally, in order to refresh the gallery and to view the image there:
+//         val intent : Intent
+        val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+        intent.setData(Uri.fromFile(outFile));
+        sendBroadcast(intent);
+     }
 }
-
-
-
-
