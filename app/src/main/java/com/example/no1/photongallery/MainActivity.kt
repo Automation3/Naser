@@ -313,8 +313,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val llm = LinearLayoutManager(context)
                     mRecyclerView.layoutManager = llm
                     if (context.mAdapter == null) {
-                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
-//                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,objectId)
+//                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
+                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,objectId)
                         mRecyclerView.adapter = context.mAdapter
                         context.mAdapter!!.mListener = context
                         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -364,11 +364,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (itemsLike != null && !itemsLike!!.isNull){
            // val pk = ArrayList<String>()
             val objectId = ArrayList<String>()
+                val objectId2 = ArrayList<Boolean>()
 
                 for (i in 0 until itemsLike!!.length()) {
                     val item = MyJsonObject(itemsLike!!.getJSONObjectSafe(i))
                     if (!item.isNull) {
                    //      pk.add(item.getStringSafe("pk"))
+                        objectId2.add(item.getBoolean("object_id"))
                         objectId.add(item.getStringSafe("object_id"))
                     }
                 }

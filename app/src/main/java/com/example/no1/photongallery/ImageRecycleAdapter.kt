@@ -26,17 +26,16 @@ import com.example.no1.photongallery.utils.MyJsonObject
 import org.apache.http.NameValuePair
 import java.lang.ref.WeakReference
 
-/*
 class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
                           private var mType: Int, private var mTitles: ArrayList<String>,
-                          private var mSubtitles: ArrayList<String> , private var mLIKEs:ArrayList<String>) :
-        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {*/
+                          private var mSubtitles: ArrayList<String> , private var mLIKEs:ArrayList<Boolean>) :
+        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {
 
 
-class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
+/*class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
                           private var mType: Int, private var mTitles: ArrayList<String>,
                           private var mSubtitles: ArrayList<String>) :
-        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {
+        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {*/
 
     private val mLayouts = arrayOf(R.layout.grid_two_h, R.layout.grid_two_v, R.layout.grid_two_h_two_w,
             R.layout.grid_three_h, R.layout.grid_one)
@@ -71,8 +70,10 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
-                            pSubtitle: String) {
+ /*   private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
+                            pSubtitle: String) {*/
+        private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
+                                pSubtitle: String, pLike:Boolean, position:Int) {
         val imgOne = area.findViewById<ImageView>(R.id.imgOne)
         Picasso.with(mContext).load(url).fit().centerCrop().into(imgOne)
 
@@ -126,7 +127,20 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                         likePost(true, (mIDs.get(itemCount)).toInt())
                     }
                 }*/
-               //////////////////////////////////////////////////////////////////////////////////
+
+
+                     mask.setOnClickListener {
+                   if (pLike) {
+                       changeLike(false,position)
+                   }else {
+                       changeLike(true,position)
+
+                   }
+               }
+
+
+
+                //////////////////////////////////////////////////////////////////////////////////
                 val like = ImageView(mContext)
                 like.id = R.id.imgLike
                 like.tag = "like"
@@ -145,6 +159,14 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                 else
                     like.setImageResource(R.drawable.like_diactive)
 */
+
+                if (pLike)
+                    like.setImageResource(R.drawable.like_active)
+                else
+                    like.setImageResource(R.drawable.like_diactive)
+
+
+
                 //////////////////////////////////////////////
 
      /*           if (Math.random() < 0.7)
@@ -304,9 +326,15 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
         for (i in 0 until holder.parent.childCount) {
             val area = holder.parent.getChildAt(i)
             if (area is RelativeLayout && mSizes[mType] * holder.adapterPosition + index < mIDs.size) {
+               /* fillWithUrl(area, mIDs[mSizes[mType] * holder.adapterPosition + index],
+                        mTitles[mSizes[mType] * holder.adapterPosition + index],
+                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++])*/
+
                 fillWithUrl(area, mIDs[mSizes[mType] * holder.adapterPosition + index],
                         mTitles[mSizes[mType] * holder.adapterPosition + index],
-                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++])
+                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++]
+                        ,mLIKEs[mSizes[mType] * holder.adapterPosition + index],mType)
+
             }
         }
     }
@@ -319,13 +347,16 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
         return ((mIDs.size - 1) / mSizes[mType]) + 1
     }
 
-    fun setIDs(ids: ArrayList<String>, titles: ArrayList<String>, subtitles: ArrayList<String>) {
+    fun setIDs(ids: ArrayList<String>, titles: ArrayList<String>, subtitles: ArrayList<String>,likes: ArrayList<Boolean>) {
         for (id in ids)
             mIDs.add(id)
         for (title in titles)
             mTitles.add(title)
         for (subtitle in subtitles)
             mSubtitles.add(subtitle)
+        for (like in likes)
+            mLIKEs.add(like)
+
 
         notifyDataSetChanged()
     }
@@ -335,12 +366,14 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
         val type = mType
     }
 
-    fun likePost(state:Boolean,position: Int){
-        if (state==true)
+    fun changeLike(state:Boolean,position: Int){
+        if (state)
         {
+            mLIKEs[position]=false
             ///  send like state to server
         }else{
-
+            mLIKEs[position]=true
+            ///  send dislike state to server
         }
     }
 
@@ -357,8 +390,8 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
             val context: Context? = parent_like.get()
             result_like = MyJsonObject(jParser.makeHttpRequest(context!!.getString(R.string.server_address) +
                     "/api/bookmarks/", "POST", params, context))
-            if (result_like != null && !result_like!!.isNull)
-                items_like = MyJsonArray(result_like!!.getJSONArraySafe("results"))
+//            if (result_like != null && !result_like!!.isNull)
+//                items_like = MyJsonArray(result_like!!.getJSONArraySafe("results"))
             return null
         }
 
