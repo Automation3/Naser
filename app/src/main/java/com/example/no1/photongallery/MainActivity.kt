@@ -311,7 +311,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val llm = LinearLayoutManager(context)
                     mRecyclerView.layoutManager = llm
                     if (context.mAdapter == null) {
-                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,temp)
+                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
+//                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,objectId)
                         mRecyclerView.adapter = context.mAdapter
                         context.mAdapter!!.mListener = context
                         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {

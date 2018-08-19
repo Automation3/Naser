@@ -49,7 +49,7 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
         change_background(bitmap)
 
     }
-
+/*
     private class LoadRandomPics(context: Activity) : AsyncTask<String, String, String>() {
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
@@ -97,7 +97,8 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
                     val llm = LinearLayoutManager(context)
                     mRecyclerView.layoutManager = llm
                     if (context.mAdapter == null) {
-                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,temp)
+                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
+//                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,liked_image)
                         mRecyclerView.adapter = context.mAdapter
                         context.mAdapter!!.mListener = context
                         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -120,15 +121,14 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
                 }
             }
         }
-    }
+    }*/
 
      fun change_background(bitmap: Bitmap){
-                   var   myWallpaperManager:WallpaperManager
+                   val   myWallpaperManager:WallpaperManager
                    myWallpaperManager = WallpaperManager.getInstance(getApplicationContext())
             //     myWallpaperManager.setResource(R.drawable.five);
                   myWallpaperManager.setBitmap(bitmap);
                  }
-
 }
 
 

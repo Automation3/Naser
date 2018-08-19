@@ -26,17 +26,17 @@ import com.example.no1.photongallery.utils.MyJsonObject
 import org.apache.http.NameValuePair
 import java.lang.ref.WeakReference
 
-
+/*
 class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
                           private var mType: Int, private var mTitles: ArrayList<String>,
                           private var mSubtitles: ArrayList<String> , private var mLIKEs:ArrayList<String>) :
-        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {
+        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {*/
 
 
-/*class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
+class ImageRecycleAdapter(private val mContext: Context, private var mIDs: ArrayList<String>,
                           private var mType: Int, private var mTitles: ArrayList<String>,
                           private var mSubtitles: ArrayList<String>) :
-        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {*/
+        RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {
 
     private val mLayouts = arrayOf(R.layout.grid_two_h, R.layout.grid_two_v, R.layout.grid_two_h_two_w,
             R.layout.grid_three_h, R.layout.grid_one)
@@ -117,7 +117,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                 mask.startAnimation(anim)
 
                ///////////////////// Mohammad /////////////////////////////////////////////
-                mask.setOnClickListener {
+           /*     mask.setOnClickListener {
                     if (mLIKEs.contains((mIDs.get(itemCount)))) {
                         mLIKEs.remove((mIDs.get(itemCount)))
                         likePost(false, (mIDs.get(itemCount)).toInt())
@@ -125,7 +125,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                         mLIKEs.add((mIDs.get(itemCount)).toString())
                         likePost(true, (mIDs.get(itemCount)).toInt())
                     }
-                }
+                }*/
                //////////////////////////////////////////////////////////////////////////////////
                 val like = ImageView(mContext)
                 like.id = R.id.imgLike
@@ -139,12 +139,12 @@ class ImageRecycleAdapter(private val mContext: Context, private var mIDs: Array
                 like.layoutParams = params
 
                 ////////////////////////  Mohammad  //////////////////////
-                if (mLIKEs.contains((mIDs.get(itemCount))))
+               /* if (mLIKEs.contains((mIDs.get(itemCount))))
 
                     like.setImageResource(R.drawable.like_active)
                 else
                     like.setImageResource(R.drawable.like_diactive)
-
+*/
                 //////////////////////////////////////////////
 
      /*           if (Math.random() < 0.7)
