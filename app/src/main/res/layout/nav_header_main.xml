@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/nav_header_height"
+    android:background="#77000000"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="10dp"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingStart="150dp"
+        android:paddingEnd="0dp"
+        android:text="ترانه علیدوستی"
+        android:gravity="start"
+        android:textSize="17sp"
+        android:background="#dadada"
+        android:textColor="@color/photonRed"
+        android:layout_centerVertical="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    <TextView
+        android:id="@+id/txtInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtName"
+        android:textSize="13sp"
+        android:paddingStart="150dp"
+        android:paddingEnd="0dp"
+        android:gravity="start"
+        android:background="#dadada"
+        android:textColor="#000000"
+        android:text="امتیاز : 578 فتوبون صفر" />
+
+    <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:adjustViewBounds="true"
+        app:siShape="@mipmap/my_svg"
+        android:src="@mipmap/bebe" />
+</RelativeLayout>

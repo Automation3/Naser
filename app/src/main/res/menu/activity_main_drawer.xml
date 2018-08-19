@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_auto_bg"
+            android:title="Auto Background"/>
+        <item
+            android:id="@+id/nav_profile"
+            android:title="حساب کاربری" />
+        <item
+            android:id="@+id/nav_orders"
+            android:title="سفارش ها" />
+        <item
+            android:id="@+id/nav_quotes"
+            android:title="گالری گفته ها" />
+        <item
+            android:id="@+id/nav_labels"
+            android:title="گالری برچسب ها" />
+        <item
+            android:id="@+id/nav_about_us"
+            android:title="درباره ما" />
+        <item
+            android:id="@+id/nav_rules"
+            android:title="قوانین مقررات" />
+        <item
+            android:id="@+id/nav_faq"
+            android:title="سوالات متداول" />
+        <item
+            android:id="@+id/nav_settings"
+            android:title="تنظیمات" />
+        <item
+            android:id="@+id/nav_contact_us"
+            android:title="تماس با ما" />
+        <item
+            android:id="@+id/nav_exit"
+            android:title="خروج از حساب کاربری" />
+    </group>
+</menu>

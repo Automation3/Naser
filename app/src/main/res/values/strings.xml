@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Photon Gallery</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="server_address">http://178.79.133.93</string>
+
+
+    <string name="enter_mobile_number">لطفا شماره تلفن خود را وارد نمایید</string>
+    <string name="payamak">لطفا کدی را که هم اکنون برایب شما پیامک شد </string>
+    <string name="payamak2">در کادر زیر وارد نمایید</string>
+
+</resources>

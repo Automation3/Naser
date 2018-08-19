@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp"
+    tools:context=".AutoBackgroundActivity">
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/chkActive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lblStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="وضعیت"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chkActive" />
+
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="غیرفعال"
+        android:textColor="@color/photonRed"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/lblStatus"
+        app:layout_constraintStart_toEndOf="@id/lblStatus" />
+
+    <TextView
+        android:id="@+id/lblDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="با فعال کردن این قابلیت پس زمینه گوشی شما طبق زمان بندی تغییر می کند"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtStatus" />
+
+    <View
+        android:id="@+id/horLine1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="#000000"
+        app:layout_constraintTop_toBottomOf="@id/lblDescription" />
+
+    <TextView
+        android:id="@+id/lblSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="زمان بندی"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horLine1" />
+
+    <TextView
+        android:id="@+id/txtSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:textColor="@color/photonRed"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/lblSchedule"
+        app:layout_constraintStart_toEndOf="@id/lblSchedule" />
+
+    <View
+        android:id="@+id/horLine2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="#000000"
+        app:layout_constraintTop_toBottomOf="@id/txtSchedule" />
+
+    <TextView
+        android:id="@+id/lblGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="گالری"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horLine2" />
+
+    <TextView
+        android:id="@+id/lblSpecialGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="منتخب فوتون"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/lblGallery"
+        app:layout_constraintStart_toEndOf="@id/lblGallery" />
+
+    <TextView
+        android:id="@+id/lblAllGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="تمام گالری ها"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/lblGallery"
+        app:layout_constraintStart_toEndOf="@id/lblSpecialGallery" />
+
+    <TextView
+        android:id="@+id/lblSelectedGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="گالری های منتخب"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/lblGallery"
+        app:layout_constraintStart_toEndOf="@id/lblAllGallery" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/areaIcons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lblGallery" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="236dp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/txtSchedule"
+        app:layout_constraintEnd_toStartOf="@+id/txtSchedule"
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtSchedule" />
+</android.support.constraint.ConstraintLayout>
