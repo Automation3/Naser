@@ -74,7 +74,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
     /*   private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
                                pSubtitle: String) {*/
     private fun fillWithUrl(area: RelativeLayout, url: String, pTitle: String,
-                            pSubtitle: String, pLike: Boolean, position: Int) {
+                            pSubtitle: String, pLike: Boolean, position: String) {
         val imgOne = area.findViewById<ImageView>(R.id.imgOne)
         Picasso.with(mContext).load(url).fit().centerCrop().into(imgOne)
 
@@ -330,11 +330,19 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                 /* fillWithUrl(area, mURLs[mSizes[mType] * holder.adapterPosition + index],
                          mTitles[mSizes[mType] * holder.adapterPosition + index],
                          mSubtitles[mSizes[mType] * holder.adapterPosition + index++])*/
+                val situation :Boolean
+                if (mLIKEs!!.contains(mIDs[mSizes[mType] * holder.adapterPosition + index])){
+                    situation=true
+                }else{
+                    situation=false
+                }
+
 
                 fillWithUrl(area, mURLs[mSizes[mType] * holder.adapterPosition + index],
                         mTitles[mSizes[mType] * holder.adapterPosition + index],
-                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++],false,0)
-//                        , mLIKEs!!.contains(mIDs[mSizes[mType] * holder.adapterPosition + index]), mType)
+                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++],situation,
+                        mIDs[mSizes[mType] * holder.adapterPosition + index])
+//                mSubtitles[mSizes[mType] * holder.adapterPosition + index++],false,"0")
 
             }
         }
