@@ -32,7 +32,7 @@ class AutoBackgroundActivity : AppCompatActivity() {
     lateinit var mAreaIcons: RecyclerView
 
     ///////////////////Mohammad ///////////////////
-    var Periodic_Time = AlarmManager.INTERVAL_FIFTEEN_MINUTES
+    var periodicTime = AlarmManager.INTERVAL_FIFTEEN_MINUTES
     ///////////////////////////////////////////////
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +46,6 @@ class AutoBackgroundActivity : AppCompatActivity() {
         /////////////////// Mohammad////////////////////
         val textView2 = findViewById<TextView>(R.id.txtStatus)
         textView2.typeface = font
-
         val sw = findViewById<SwitchCompat>(R.id.chkActive)
         sw?.setOnCheckedChangeListener({ _, isChecked ->
             val msg = if (isChecked) "فعال" else "غیر فعال"
@@ -57,12 +56,9 @@ class AutoBackgroundActivity : AppCompatActivity() {
              //   Toast.makeText(this, "Hi there! This is a stae1.", Toast.LENGTH_SHORT).show()
             }else cancelAlarm()  //  cancel  ChangeBackground
         })
-
         val textView3 = findViewById<TextView>(R.id.txtSchedule)
         textView3.typeface = font
-
         val spinner = findViewById<Spinner>(R.id.spinner)
-
         // Initializing a String Array
         val colors = arrayOf("نیم ساعت","1ساعت","12ساعت","24ساعت")
 
@@ -74,28 +70,23 @@ class AutoBackgroundActivity : AppCompatActivity() {
 
         // Set the drop down view resource
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
-
         // Finally, data bind the spinner object with dapter
         spinner.adapter = adapter;
-
         // Set an on item selected listener for spinner object
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
-
-
                 //   // the Periodic_Time changes based on the spinner but becarefull sw must be on
-
                 if (position==0){
-                     Periodic_Time = AlarmManager.INTERVAL_FIFTEEN_MINUTES
+                    periodicTime = AlarmManager.INTERVAL_FIFTEEN_MINUTES
                 }
                 if (position==1){
-                     Periodic_Time = AlarmManager.INTERVAL_HOUR
+                    periodicTime = AlarmManager.INTERVAL_HOUR
                 }
                 if (position==2){
-                     Periodic_Time = AlarmManager.INTERVAL_HALF_DAY
+                    periodicTime = AlarmManager.INTERVAL_HALF_DAY
                 }
                 if (position==3){
-                     Periodic_Time = AlarmManager.INTERVAL_DAY
+                    periodicTime = AlarmManager.INTERVAL_DAY
                 }
 
             }
@@ -166,7 +157,7 @@ class AutoBackgroundActivity : AppCompatActivity() {
                                     item.getStringSafe("cover_pic"))
                         }
                     }
-                    val adapter: AutoBGIconAdapter = AutoBGIconAdapter(context,list)
+                    val adapter = AutoBGIconAdapter(context,list)
                     val activity = context as AutoBackgroundActivity
                     val llm = LinearLayoutManager(context)
                     activity.mAreaIcons.layoutManager = llm
@@ -180,27 +171,23 @@ class AutoBackgroundActivity : AppCompatActivity() {
         val sw = findViewById<SwitchCompat>(R.id.chkActive)
         val intent = Intent(this, MainActivity::class.java)
         if (sw.isChecked) {
-            // TODO change image in dawer
-// To pass any data to next activity
+               // To pass any data to next activity
             intent.putExtra("keyIdentifier", "1")
-// start your next activity
+                // start your next activity
             setResult(RESULT_OK, intent);
             finish();
-
-        } else {
-
-            // To pass any data to next activity
+            } else {
+                // To pass any data to next activity
             intent.putExtra("keyIdentifier", "0")
-// start your next activity
+                // start your next activity
             setResult(RESULT_OK, intent);
             finish();
            // super.onBackPressed()
         }
     }
 
-
     // Setup a recurring alarm every half hour
-    fun scheduleAlarm() {
+   private fun scheduleAlarm() {
         // Construct an intent that will execute the AlarmReceiver
         val intent = Intent(applicationContext, MyAlarmReceiver::class.java)
         // Create a PendingIntent to be triggered when the alarm goes off
@@ -212,12 +199,12 @@ class AutoBackgroundActivity : AppCompatActivity() {
         // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
         // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY
         alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
-                Periodic_Time, pIntent)
+                periodicTime, pIntent)
 
         // the Periodic_Time changes based on the spinner
     }
 
-    fun cancelAlarm() {
+   private fun cancelAlarm() {
         val intent = Intent(applicationContext, MyAlarmReceiver::class.java)
         val pIntent = PendingIntent.getBroadcast(this, MyAlarmReceiver.REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT)

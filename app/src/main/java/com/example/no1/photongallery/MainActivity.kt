@@ -401,7 +401,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun switchBackground(context: Context, state: String) {
         val switch = ImageView(context)
-        if (state == "0")
+        if (state == "1")
             switch.setImageResource(R.drawable.autobg_active)
         else
             switch.setImageResource(R.drawable.double_down)

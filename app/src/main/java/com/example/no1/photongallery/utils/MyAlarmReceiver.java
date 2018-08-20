@@ -17,8 +17,6 @@ public class MyAlarmReceiver extends BroadcastReceiver {
         Intent i = new Intent(context, AutoChangeBackgroundImage.class);
      //   i.putExtra("foo", "bar");
         context.startService(i);
-
-
         Toast.makeText(context, "yeeeeeeeesssssssssssssss", Toast.LENGTH_SHORT).show();
     }
 

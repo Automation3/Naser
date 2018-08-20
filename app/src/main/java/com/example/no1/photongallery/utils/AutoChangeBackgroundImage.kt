@@ -25,19 +25,10 @@ import java.lang.ref.WeakReference
 class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
 
     override fun onHandleIntent(intent: Intent?) {
-        // TODO: load random pic
 
-//        val pDialog = ProgressDialog(this)
-//        pDialog.setMessage("در حال اتصال به سرور")
-//        pDialog.isIndeterminate = false
-//        pDialog.setCancelable(false)
-//        pDialog.show()
-//        MainActivity.LoadIcons(this, pDialog).execute()
-    ///////////////////////////////    LoadRandomPics(context = AutoBackgroundActivity).execute()   //////////////////////
+        LoadRandomPics(this).execute()
 
-
-        val t = ImageView(this)
-
+     /*   val t = ImageView(this)
         if (Math.random() < 0.5){
             t.setImageResource(R.drawable.test)
         }else{
@@ -45,14 +36,15 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
         }
         val draw = t.getDrawable() as BitmapDrawable
         val bitmap = draw.bitmap
-
-        change_background(bitmap)
+        changeBackground(bitmap)*/
 
     }
-/*
     private class LoadRandomPics(context: Activity) : AsyncTask<String, String, String>() {
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
+        var title: MyJsonArray? = null
+        var thumbnail: MyJsonArray? = null
+
         var parent: WeakReference<Activity> = WeakReference(context)
       //  val pDialog: WeakReference<ProgressDialog> = WeakReference(dialog)
 
@@ -71,9 +63,11 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
 
             result = MyJsonObject(jParser.makeHttpRequest(url, "GET", params, context))
             if (result != null && !result!!.isNull) {
-                items = MyJsonArray(result!!.getJSONArraySafe("results"))
-                context.mNext = result!!.getStringSafe("next")
-                context.mPrev = result!!.getStringSafe("previous")
+                items = MyJsonArray(result!!.getJSONArraySafe("image"))
+                title = MyJsonArray(result!!.getJSONArraySafe("title"))
+                thumbnail = MyJsonArray(result!!.getJSONArraySafe("thumbnail"))
+
+
             }
             return null
         }
@@ -84,51 +78,15 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
             val context: MainActivity = parent.get() as MainActivity
             context.runOnUiThread {
                 if (items != null && !items!!.isNull) {
-                    val temp = ArrayList<String>()
-                    val titles = ArrayList<String>()
-                    val subtitles = ArrayList<String>()
-                    for (i in 0 until items!!.length()) {
-                        val item = MyJsonObject(items!!.getJSONObjectSafe(i))
-                        temp.add(context.getString(R.string.server_address) + item.getStringSafe("image"))
-                        titles.add(item.getStringSafe("title"))
-                        subtitles.add(item.getStringSafe("subtitle"))
+                    changeBackground)(items)            }
                     }
-                    val mRecyclerView = context.findViewById<RecyclerView>(R.id.grdCollection)
-                    val llm = LinearLayoutManager(context)
-                    mRecyclerView.layoutManager = llm
-                    if (context.mAdapter == null) {
-                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
-//                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles,liked_image)
-                        mRecyclerView.adapter = context.mAdapter
-                        context.mAdapter!!.mListener = context
-                        mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                             //   context.totalItemCount = llm.itemCount
-                             //   context.lastVisibleItem = llm.findLastVisibleItemPosition()
-//                                if (context.totalItemCount <= context.lastVisibleItem + context.visibleThreshold
-//                                        && context.mNext.isNotEmpty() && context.mNext != "null") {
-//                                    val pDialog = ProgressDialog(context)
-//                                    pDialog.setMessage("در حال اتصال به سرور")
-//                                    pDialog.isIndeterminate = false
-//                                    pDialog.setCancelable(false)
-//                                    pDialog.show()
-//                                    LoadRandomPics(context, pDialog).execute(context.mNext)
-//                                }
-                            }
-                    })
-                    } else
-                        context.mAdapter!!.setIDs(temp, titles, subtitles)
-                }
             }
-        }
-    }*/
+    }
 
-     fun change_background(bitmap: Bitmap){
-                   val   myWallpaperManager:WallpaperManager
-                   myWallpaperManager = WallpaperManager.getInstance(getApplicationContext())
-            //     myWallpaperManager.setResource(R.drawable.five);
+      private fun changeBackground(bitmap: Bitmap){
+                   val myWallpaperManager:WallpaperManager = WallpaperManager.getInstance(getApplicationContext())
                   myWallpaperManager.setBitmap(bitmap);
-                 }
+      }
 }
 
 

@@ -98,8 +98,6 @@ class AutoBGIconAdapter(private val mContext: Context, private var mIDs: ArrayLi
         var imgTickFour: ImageView = itemView.findViewById(R.id.imgTickFour)
 
     }
-
-
     //////
     fun getRandom(array: IntArray): Int {
         val rnd = Random().nextInt(array.size)

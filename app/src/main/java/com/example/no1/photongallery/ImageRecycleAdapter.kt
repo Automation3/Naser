@@ -32,7 +32,6 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                           private var mIDs : ArrayList<String>) :
         RecyclerView.Adapter<ImageRecycleAdapter.ImageHolder>() {
 
-
 /*class ImageRecycleAdapter(private val mContext: Context, private var mURLs: ArrayList<String>,
                           private var mType: Int, private var mTitles: ArrayList<String>,
                           private var mSubtitles: ArrayList<String>) :
@@ -88,7 +87,6 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                 }
                 true
             }
-
             true
         })
 
@@ -119,17 +117,6 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                 mask.startAnimation(anim)
 
                 ///////////////////// Mohammad /////////////////////////////////////////////
-                /*     mask.setOnClickListener {
-                         if (mLIKEs.contains((mURLs.get(itemCount)))) {
-                             mLIKEs.remove((mURLs.get(itemCount)))
-                             likePost(false, (mURLs.get(itemCount)).toInt())
-                         }else {
-                             mLIKEs.add((mURLs.get(itemCount)).toString())
-                             likePost(true, (mURLs.get(itemCount)).toInt())
-                         }
-                     }*/
-
-/*
                 mask.setOnClickListener {
                     if (pLike) {
                         changeLike(false, position)
@@ -137,9 +124,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                         changeLike(true, position)
 
                     }
-                }*/
-
-
+                }
                 //////////////////////////////////////////////////////////////////////////////////
                 val like = ImageView(mContext)
                 like.id = R.id.imgLike
@@ -153,28 +138,12 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                 like.layoutParams = params
 
                 ////////////////////////  Mohammad  //////////////////////
-                /* if (mLIKEs.contains((mURLs.get(itemCount))))
-
-                     like.setImageResource(R.drawable.like_active)
-                 else
-                     like.setImageResource(R.drawable.like_diactive)
- */
-/*
-
                 if (pLike)
                     like.setImageResource(R.drawable.like_active)
                 else
                     like.setImageResource(R.drawable.like_diactive)
 
-*/
-
-                //////////////////////////////////////////////
-
-                /*           if (Math.random() < 0.7)
-                               like.setImageResource(R.drawable.like_diactive)
-                           else
-                               like.setImageResource(R.drawable.like_active)*/
-
+                /////////////////////////////////////////////////////////////
                 area.addView(like)
                 like.startAnimation(anim)
 
@@ -255,9 +224,14 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                         area.addView(wallpaper)
                         wallpaper.startAnimation(anim)
                         wallpaper.setOnClickListener({
-                            val intent = Intent(mContext, PictureActivity::class.java)
-                            intent.putExtra("address", url)
-                            mContext.startActivity(intent)
+                            /////////////  Mohammad  ///////////////////////////////////////
+                            val pDialog = ProgressDialog(mContext)
+                            LoadSpecificPicture(mContext as Activity,pDialog,position).execute()
+
+//                            val intent = Intent(mContext, PictureActivity::class.java)
+//                            intent.putExtra("address", url)
+//                            mContext.startActivity(intent)
+                            ///////////////////////////////////////////////////////////////////
                         })
 
                         val share = ImageView(mContext)
@@ -265,7 +239,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                         share.tag = "share"
                         params = RelativeLayout.LayoutParams(px * 2, px * 2)
                         params.addRule(RelativeLayout.ABOVE, R.id.btnWallpaper)
-                        params.setMargins(0, 0, 0, 5)
+                        params.setMargins(0, 0, 0, 5);
                         params.marginEnd = 8
                         params.addRule(RelativeLayout.ALIGN_PARENT_END)
                         share.layoutParams = params
@@ -330,20 +304,16 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                 /* fillWithUrl(area, mURLs[mSizes[mType] * holder.adapterPosition + index],
                          mTitles[mSizes[mType] * holder.adapterPosition + index],
                          mSubtitles[mSizes[mType] * holder.adapterPosition + index++])*/
-                val situation :Boolean
-                if (mLIKEs!!.contains(mIDs[mSizes[mType] * holder.adapterPosition + index])){
-                    situation=true
-                }else{
-                    situation=false
-                }
 
+           ////////////////  Mohammad  ///////////////////////////////////////////////////////////////////////////////
+                val situation :Boolean = mLIKEs!!.contains(mIDs[mSizes[mType] * holder.adapterPosition + index])
 
                 fillWithUrl(area, mURLs[mSizes[mType] * holder.adapterPosition + index],
                         mTitles[mSizes[mType] * holder.adapterPosition + index],
                         mSubtitles[mSizes[mType] * holder.adapterPosition + index++],situation,
                         mIDs[mSizes[mType] * holder.adapterPosition + index])
 //                mSubtitles[mSizes[mType] * holder.adapterPosition + index++],false,"0")
-
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
         }
     }
@@ -373,19 +343,24 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
         val type = mType
     }
 
-    fun changeLike(state: Boolean, position: Int) {
+    private fun changeLike(state: Boolean, position: String) {
+        val pDialog = ProgressDialog(mContext)
         if (state) {
-            //mLIKEs[position]=false
+            mLIKEs!!.remove(position)
             ///  send like state to server
+            SendLikeDataToServer(mContext as Activity,pDialog,false).execute()
         } else {
             //mLIKEs[position]=true
+            mLIKEs!!.add(position)
+            SendLikeDataToServer(mContext as Activity,pDialog,false).execute()
             ///  send dislike state to server
         }
     }
 
-    private class send_data_to_server(context: Activity, dialog: ProgressDialog) : AsyncTask<String, String, String>() {
+    private class SendLikeDataToServer(context: Activity, dialog: ProgressDialog,likestate: Boolean) : AsyncTask<String, String, String>() {
         var result_like: MyJsonObject? = null
         var items_like: MyJsonArray? = null
+        var setOrResetState = likestate
         var parent_like: WeakReference<Activity> = WeakReference(context)
         val pDialog: WeakReference<ProgressDialog> = WeakReference(dialog)
 
@@ -405,6 +380,51 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
             super.onPostExecute(result)
             pDialog.get()!!.dismiss()
 
+        }
+    }
+
+    private class LoadSpecificPicture(context: Activity, dialog: ProgressDialog,id:String) : AsyncTask<String, String, String>() {
+        var result: MyJsonObject? = null
+        var items: MyJsonArray? = null
+        var parent: WeakReference<Activity> = WeakReference(context)
+        val pDialog: WeakReference<ProgressDialog> = WeakReference(dialog)
+
+        override fun doInBackground(vararg p0: String?): String? {
+            val params = ArrayList<NameValuePair>()
+
+            val jParser = JSONParser()
+
+            val context: Context? = parent.get()
+            result = MyJsonObject(jParser.makeHttpRequest(context!!.getString(R.string.server_address) +
+                    "/api/galleries/", "GET", params, context))
+            if (result != null && !result!!.isNull)
+                items = MyJsonArray(result!!.getJSONArraySafe("results"))
+            return null
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            pDialog.get()!!.dismiss()
+            val context: MainActivity = parent.get() as MainActivity
+            context.runOnUiThread {
+                if (items != null && !items!!.isNull) {
+                    val tempFullImage = ArrayList<String>()
+                    for (i in 0 until items!!.length()) {
+                        val item = MyJsonObject(items!!.getJSONObjectSafe(i))
+                        tempFullImage.add(context.getString(R.string.server_address) + item.getStringSafe("image"))
+                    }
+//                                    val pDialog = ProgressDialog(context)
+//                                    pDialog.setMessage("در حال اتصال به سرور")
+//                                    pDialog.isIndeterminate = false
+//                                    pDialog.setCancelable(false)
+//                                    pDialog.show()
+                    //////////////////////  Mohammad  //////////////////////////////////////////
+                                    val intent = Intent(context, PictureActivity::class.java)
+                                    intent.putExtra("address", tempFullImage)
+                                    context.startActivity(intent)
+                    ////////////////////////////////////////////////////////////////////////////
+                                }
+            }
         }
     }
 
