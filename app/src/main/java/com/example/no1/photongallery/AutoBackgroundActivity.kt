@@ -46,21 +46,22 @@ class AutoBackgroundActivity : AppCompatActivity() {
         /////////////////// Mohammad////////////////////
         val textView2 = findViewById<TextView>(R.id.txtStatus)
         textView2.typeface = font
+        //TODO laod sate from SharedPref and set it into sw
         val sw = findViewById<SwitchCompat>(R.id.chkActive)
         sw?.setOnCheckedChangeListener({ _, isChecked ->
             val msg = if (isChecked) "فعال" else "غیر فعال"
-            textView2.text=msg
+            textView2.text = msg
             //  run  ChangeBackground
             if (sw.isChecked) {
                 scheduleAlarm()
-             //   Toast.makeText(this, "Hi there! This is a stae1.", Toast.LENGTH_SHORT).show()
-            }else cancelAlarm()  //  cancel  ChangeBackground
+                //   Toast.makeText(this, "Hi there! This is a stae1.", Toast.LENGTH_SHORT).show()
+            } else cancelAlarm()  //  cancel  ChangeBackground
         })
         val textView3 = findViewById<TextView>(R.id.txtSchedule)
         textView3.typeface = font
         val spinner = findViewById<Spinner>(R.id.spinner)
         // Initializing a String Array
-        val colors = arrayOf("نیم ساعت","1ساعت","12ساعت","24ساعت")
+        val colors = arrayOf("نیم ساعت", "1ساعت", "12ساعت", "24ساعت")
 
         // Initializing an ArrayAdapter
         val adapter = ArrayAdapter(this, // Context
@@ -73,25 +74,27 @@ class AutoBackgroundActivity : AppCompatActivity() {
         // Finally, data bind the spinner object with dapter
         spinner.adapter = adapter;
         // Set an on item selected listener for spinner object
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent:AdapterView<*>, view: View, position: Int, id: Long){
+        //Todo save this settings in SHaredPref too
+        //TODO also change intervals, Contact Naser to get interval list ;-)
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 //   // the Periodic_Time changes based on the spinner but becarefull sw must be on
-                if (position==0){
-                    periodicTime = AlarmManager.INTERVAL_FIFTEEN_MINUTES
+                if (position == 0) {
+                    periodicTime = 30000//AlarmManager.INTERVAL_FIFTEEN_MINUTES
                 }
-                if (position==1){
+                if (position == 1) {
                     periodicTime = AlarmManager.INTERVAL_HOUR
                 }
-                if (position==2){
+                if (position == 2) {
                     periodicTime = AlarmManager.INTERVAL_HALF_DAY
                 }
-                if (position==3){
+                if (position == 3) {
                     periodicTime = AlarmManager.INTERVAL_DAY
                 }
 
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>){
+            override fun onNothingSelected(parent: AdapterView<*>) {
                 // Another interface callback
             }
         }
@@ -121,8 +124,8 @@ class AutoBackgroundActivity : AppCompatActivity() {
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
         var parent: WeakReference<Activity> = WeakReference(context)
-        lateinit var pDialog : ProgressDialog
-        lateinit var list : ArrayList<String>
+        lateinit var pDialog: ProgressDialog
+        lateinit var list: ArrayList<String>
         override fun onPreExecute() {
             super.onPreExecute()
             pDialog = ProgressDialog(parent.get())
@@ -157,7 +160,7 @@ class AutoBackgroundActivity : AppCompatActivity() {
                                     item.getStringSafe("cover_pic"))
                         }
                     }
-                    val adapter = AutoBGIconAdapter(context,list)
+                    val adapter = AutoBGIconAdapter(context, list)
                     val activity = context as AutoBackgroundActivity
                     val llm = LinearLayoutManager(context)
                     activity.mAreaIcons.layoutManager = llm
@@ -171,23 +174,23 @@ class AutoBackgroundActivity : AppCompatActivity() {
         val sw = findViewById<SwitchCompat>(R.id.chkActive)
         val intent = Intent(this, MainActivity::class.java)
         if (sw.isChecked) {
-               // To pass any data to next activity
+            // To pass any data to next activity
             intent.putExtra("keyIdentifier", "1")
-                // start your next activity
+            // start your next activity
             setResult(RESULT_OK, intent);
             finish();
-            } else {
-                // To pass any data to next activity
+        } else {
+            // To pass any data to next activity
             intent.putExtra("keyIdentifier", "0")
-                // start your next activity
+            // start your next activity
             setResult(RESULT_OK, intent);
             finish();
-           // super.onBackPressed()
+            // super.onBackPressed()
         }
     }
 
     // Setup a recurring alarm every half hour
-   private fun scheduleAlarm() {
+    private fun scheduleAlarm() {
         // Construct an intent that will execute the AlarmReceiver
         val intent = Intent(applicationContext, MyAlarmReceiver::class.java)
         // Create a PendingIntent to be triggered when the alarm goes off
@@ -204,14 +207,13 @@ class AutoBackgroundActivity : AppCompatActivity() {
         // the Periodic_Time changes based on the spinner
     }
 
-   private fun cancelAlarm() {
+    private fun cancelAlarm() {
         val intent = Intent(applicationContext, MyAlarmReceiver::class.java)
         val pIntent = PendingIntent.getBroadcast(this, MyAlarmReceiver.REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarm = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.cancel(pIntent)
     }
-
 
 
 }

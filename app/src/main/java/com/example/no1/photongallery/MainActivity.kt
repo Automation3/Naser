@@ -39,11 +39,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var mPrev = ""
     var mAdapter: ImageRecycleAdapter? = null
     var curGallery: String = "-1"
+    var curGalleyTextView: TextView? = null
     private val visibleThreshold = 4
     private var lastVisibleItem: Int = 0
     private var totalItemCount: Int = 0
     var state = "0"
-
+    var switch: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,9 +86,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //the method we have create in activity
             applyFontToMenuItem(mi)
         }
-        val switch = ImageView(this)
+        switch = ImageView(this)
 
-        switch.setImageResource(R.drawable.autobg_active)
+        //TODO laod sate from SharedPref and set it into switch
+        switch?.setImageResource(R.drawable.autobg_active)
         navigationView.menu.findItem(R.id.nav_auto_bg).actionView = switch
 
         btnUp = findViewById(R.id.btnUp)
@@ -121,7 +123,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         pDialog.show()
         LoadIcons(this, pDialog).execute()
         ////////// get like_Array //////////////
-        LoadLikes(this, pDialog).execute()
+        //LoadLikes(this, pDialog).execute()
         /////////////////////////////////////////
     }
 
@@ -244,13 +246,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 pDialog.isIndeterminate = false
                                 pDialog.setCancelable(false)
                                 pDialog.show()
+                                val arrLikes = (context as MainActivity).mAdapter!!.mLIKEs
                                 (context as MainActivity).mAdapter = null
                                 context.mNext = ""
                                 context.curGallery = v.tag as String
-                                LoadPics(context, pDialog).execute()
+                                LoadPics(context, pDialog, arrLikes).execute()
                                 //////////////////  mohammad /////////////////////
 //                                txtGallery.currentTextColor == Color.RED
+                                if (context.curGalleyTextView != null)
+                                    context.curGalleyTextView!!.setTextColor(Color.WHITE)
                                 txtGallery.setTextColor(Color.BLACK)
+                                context.curGalleyTextView = txtGallery
                                 //////////////////////////////////////////////////
                             })
                             area.addView(v)
@@ -261,7 +267,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private class LoadPics(context: Activity, dialog: ProgressDialog, val mLikes: ArrayList<String>? = null) : AsyncTask<String, String, String>() {
+    private class LoadPics(context: Activity, dialog: ProgressDialog, var mLikes: ArrayList<String>? = null) : AsyncTask<String, String, String>() {
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
         var parent: WeakReference<Activity> = WeakReference(context)
@@ -314,6 +320,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     mRecyclerView.layoutManager = llm
                     if (context.mAdapter == null) {
 //                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
+                        if (mLikes == null)
+                            mLikes = ArrayList<String>()
                         context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles, mLikes, iDs)
                         mRecyclerView.adapter = context.mAdapter
                         context.mAdapter!!.mListener = context
@@ -354,6 +362,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     "/api/bookmarks/", "GET", params, context))
             if (resultLike != null && !resultLike!!.isNull)
                 itemsLike = MyJsonArray(resultLike!!.getJSONArraySafe("results"))
+            //ToDo: this only laods the first 10 likes from user
+            //TODO:  check the itemsLike.getStringSafe("next") to see if more likes are available
+            //TODO: if more is there you have to load again , check line 339 for an example
             return null
         }
 
@@ -378,21 +389,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                // val State = data.getStringExtra("keyIdentifier")
-                //  val switch = findViewById<ImageView>(R.id.drawer_switch)
-                //  val switch = ImageView(this)
-
-                // get your data here
-                //    Toast.makeText(this, "Hi there! This is a Toast.", Toast.LENGTH_SHORT).show()
                 state = data.getStringExtra("keyIdentifier")
+                //TODO save this state into SharedPreferences
                 if (state == "0") {
-                    Toast.makeText(this, "Hi there! This is a state0 .", Toast.LENGTH_SHORT).show()
-                    //     switch.setImageResource(R.drawable.autobg_active)
                     switchBackground(this, state)
                 }
                 if (state == "1") {
-                    Toast.makeText(this, "Hi there! This is a state1.", Toast.LENGTH_SHORT).show()
-//                        switch.setImageResource(R.drawable.double_down)
                     switchBackground(this, state)
                 }
             }
@@ -400,11 +402,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun switchBackground(context: Context, state: String) {
-        val switch = ImageView(context)
         if (state == "1")
-            switch.setImageResource(R.drawable.autobg_active)
+            switch?.setImageResource(R.drawable.autobg_active)
         else
-            switch.setImageResource(R.drawable.double_down)
+            switch?.setImageResource(R.drawable.double_down)
     }
 
 }

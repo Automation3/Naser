@@ -53,6 +53,7 @@ class AutoBGIconAdapter(private val mContext: Context, private var mIDs: ArrayLi
         }
         imageView.tag = t
         Picasso.with(mContext).load(mIDs[position]).into(t)
+        //TODO also save this stuff into SharedPref
         imageView.setOnClickListener({
             if (mStates[position] == 0) {
                 mStates[position] = 1
