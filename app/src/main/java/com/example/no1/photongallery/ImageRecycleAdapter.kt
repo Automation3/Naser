@@ -129,7 +129,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                          }
                      }*/
 
-
+/*
                 mask.setOnClickListener {
                     if (pLike) {
                         changeLike(false, position)
@@ -137,7 +137,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                         changeLike(true, position)
 
                     }
-                }
+                }*/
 
 
                 //////////////////////////////////////////////////////////////////////////////////
@@ -159,12 +159,14 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
                  else
                      like.setImageResource(R.drawable.like_diactive)
  */
+/*
 
                 if (pLike)
                     like.setImageResource(R.drawable.like_active)
                 else
                     like.setImageResource(R.drawable.like_diactive)
 
+*/
 
                 //////////////////////////////////////////////
 
@@ -331,8 +333,8 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
 
                 fillWithUrl(area, mURLs[mSizes[mType] * holder.adapterPosition + index],
                         mTitles[mSizes[mType] * holder.adapterPosition + index],
-                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++]
-                        , mLIKEs!!.contains(mIDs[mSizes[mType] * holder.adapterPosition + index]), mType)
+                        mSubtitles[mSizes[mType] * holder.adapterPosition + index++],false,0)
+//                        , mLIKEs!!.contains(mIDs[mSizes[mType] * holder.adapterPosition + index]), mType)
 
             }
         }

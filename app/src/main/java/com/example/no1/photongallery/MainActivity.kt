@@ -261,7 +261,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private class LoadPics(context: Activity, dialog: ProgressDialog, val mLikeds: ArrayList<String>? = null) : AsyncTask<String, String, String>() {
+    private class LoadPics(context: Activity, dialog: ProgressDialog, val mLikes: ArrayList<String>? = null) : AsyncTask<String, String, String>() {
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
         var parent: WeakReference<Activity> = WeakReference(context)
@@ -314,7 +314,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     mRecyclerView.layoutManager = llm
                     if (context.mAdapter == null) {
 //                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles)
-                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles, mLikeds, iDs)
+                        context.mAdapter = ImageRecycleAdapter(context, temp, 0, titles, subtitles, mLikes, iDs)
                         mRecyclerView.adapter = context.mAdapter
                         context.mAdapter!!.mListener = context
                         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -361,15 +361,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onPostExecute(result)
 
             if (itemsLike != null && !itemsLike!!.isNull) {
-                val mLikeds = ArrayList<String>()
+                val mLikes = ArrayList<String>()
                 for (i in 0 until itemsLike!!.length()) {
                     val item = MyJsonObject(itemsLike!!.getJSONObjectSafe(i))
                     if (!item.isNull) {
                         //      pk.add(item.getStringSafe("pk"))
-                        mLikeds.add(item.getStringSafe("object_id"))
+                        mLikes.add(item.getStringSafe("object_id"))
                     }
                 }
-                LoadPics(parentLike.get()!!, pDialog.get()!!, mLikeds).execute()
+                LoadPics(parentLike.get()!!, pDialog.get()!!, mLikes).execute()
             }
         }
     }
@@ -386,12 +386,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 //    Toast.makeText(this, "Hi there! This is a Toast.", Toast.LENGTH_SHORT).show()
                 state = data.getStringExtra("keyIdentifier")
                 if (state == "0") {
-                    Toast.makeText(this, "Hi there! This is a stae0 .", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Hi there! This is a state0 .", Toast.LENGTH_SHORT).show()
                     //     switch.setImageResource(R.drawable.autobg_active)
                     switchBackground(this, state)
                 }
                 if (state == "1") {
-                    Toast.makeText(this, "Hi there! This is a stae1.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Hi there! This is a state1.", Toast.LENGTH_SHORT).show()
 //                        switch.setImageResource(R.drawable.double_down)
                     switchBackground(this, state)
                 }
