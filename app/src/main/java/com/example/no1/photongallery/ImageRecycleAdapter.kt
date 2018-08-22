@@ -365,7 +365,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
 
             val context: Context? = parent.get()
             result = MyJsonObject(jParser.makeHttpRequest(context!!.getString(R.string.server_address) +
-                    "/api/galleries/$id/", "GET", params, context))
+                    "/api/photos/$id/", "GET", params, context))
             return null
         }
 
@@ -374,7 +374,7 @@ class ImageRecycleAdapter(private val mContext: Context, private var mURLs: Arra
             val context: MainActivity = parent.get() as MainActivity
             context.runOnUiThread {
                 if (result != null && !result!!.isNull) {
-                    val tempFullImage = result!!.getStringSafe("image")
+                    val tempFullImage = context.getString(R.string.server_address) + result!!.getStringSafe("image")
                     //////////////////////  Mohammad  //////////////////////////////////////////
                     val intent = Intent(context, PictureActivity::class.java)
                     intent.putExtra("address", tempFullImage)

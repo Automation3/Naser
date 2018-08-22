@@ -1,7 +1,6 @@
 package com.example.no1.photongallery
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -116,15 +115,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         imgTransparent = findViewById(R.id.imgTransparent)
 
-        val pDialog = ProgressDialog(this)
-        pDialog.setMessage("در حال اتصال به سرور")
-        pDialog.isIndeterminate = false
-        pDialog.setCancelable(false)
-        pDialog.show()
-        LoadIcons(this, pDialog).execute()
-        ////////// get like_Array //////////////
-        //LoadLikes(this, pDialog).execute()
-        /////////////////////////////////////////
+        LoadIcons(this).execute()
     }
 
     private fun applyFontToMenuItem(mi: MenuItem) {
@@ -203,12 +194,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         imgTransparent.visibility = View.GONE
     }
 
-    private class LoadIcons(context: Activity, dialog: ProgressDialog) : AsyncTask<String, String, String>() {
+    private class LoadIcons(context: Activity) : AsyncTask<String, String, String>() {
 
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
         var parent: WeakReference<Activity> = WeakReference(context)
-        val pDialog: WeakReference<ProgressDialog> = WeakReference(dialog)
 
         override fun doInBackground(vararg p0: String?): String? {
             val params = ArrayList<NameValuePair>()
@@ -241,16 +231,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                     item.getStringSafe("cover_pic")).into(imgGalley)
                             v.tag = item.getStringSafe("pk")
                             v.setOnClickListener({
-                                val pDialog = ProgressDialog(context)
-                                pDialog.setMessage("در حال اتصال به سرور")
-                                pDialog.isIndeterminate = false
-                                pDialog.setCancelable(false)
-                                pDialog.show()
                                 val arrLikes = (context as MainActivity).mAdapter!!.mLIKEs
                                 (context as MainActivity).mAdapter = null
                                 context.mNext = ""
                                 context.curGallery = v.tag as String
-                                LoadPics(context, pDialog, arrLikes).execute()
+                                LoadPics(context, arrLikes).execute()
                                 //////////////////  mohammad /////////////////////
 //                                txtGallery.currentTextColor == Color.RED
                                 if (context.curGalleyTextView != null)
@@ -262,16 +247,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             area.addView(v)
                         }
                     }
-                LoadLikes(context, pDialog.get()!!).execute()
+                LoadLikes(context).execute()
             }
         }
     }
 
-    private class LoadPics(context: Activity, dialog: ProgressDialog, var mLikes: ArrayList<String>? = null) : AsyncTask<String, String, String>() {
+    private class LoadPics(context: Activity, var mLikes: ArrayList<String>? = null) : AsyncTask<String, String, String>() {
         var result: MyJsonObject? = null
         var items: MyJsonArray? = null
         var parent: WeakReference<Activity> = WeakReference(context)
-        val pDialog: WeakReference<ProgressDialog> = WeakReference(dialog)
 
         override fun doInBackground(vararg p0: String?): String? {
             val params = ArrayList<NameValuePair>()
@@ -297,7 +281,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            pDialog.get()!!.dismiss()
             val context: MainActivity = parent.get() as MainActivity
             context.runOnUiThread {
                 if (items != null && !items!!.isNull) {
@@ -331,12 +314,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 context.lastVisibleItem = llm.findLastVisibleItemPosition()
                                 if (context.totalItemCount <= context.lastVisibleItem + context.visibleThreshold
                                         && context.mNext.isNotEmpty() && context.mNext != "null") {
-                                    val pDialog = ProgressDialog(context)
-                                    pDialog.setMessage("در حال اتصال به سرور")
-                                    pDialog.isIndeterminate = false
-                                    pDialog.setCancelable(false)
-                                    pDialog.show()
-                                    LoadPics(context, pDialog).execute(context.mNext)
+                                    LoadPics(context).execute(context.mNext)
                                 }
                             }
                         })
@@ -347,11 +325,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private class LoadLikes(context: Activity, dialog: ProgressDialog) : AsyncTask<String, String, String>() {
+    private class LoadLikes(context: Activity) : AsyncTask<String, String, String>() {
         var resultLike: MyJsonObject? = null
         var itemsLike: MyJsonArray? = null
         var parentLike: WeakReference<Activity> = WeakReference(context)
-        val pDialog: WeakReference<ProgressDialog> = WeakReference(dialog)
 
         override fun doInBackground(vararg p0: String?): String? {
 
@@ -380,7 +357,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         mLikes.add(item.getStringSafe("object_id"))
                     }
                 }
-                LoadPics(parentLike.get()!!, pDialog.get()!!, mLikes).execute()
+                LoadPics(parentLike.get()!!, mLikes).execute()
             }
         }
     }

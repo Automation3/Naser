@@ -33,7 +33,8 @@
         android:id="@+id/grdCollection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/areaHeader" />
+        android:layout_below="@+id/areaHeader"
+        />
 
     <ImageView
         android:id="@+id/imgTransparent"
