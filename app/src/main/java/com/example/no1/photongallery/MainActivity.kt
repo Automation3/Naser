@@ -3,12 +3,15 @@ package com.example.no1.photongallery
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.AsyncTask
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -22,6 +25,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.example.no1.photongallery.ViewPagerFragment.MyPagerAdapter
 import com.example.no1.photongallery.utils.*
 import com.squareup.picasso.Picasso
 import org.apache.http.NameValuePair
@@ -42,12 +46,44 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val visibleThreshold = 4
     private var lastVisibleItem: Int = 0
     private var totalItemCount: Int = 0
-    var state = "0"
+    var state1 = "0"
     var switch: ImageView? = null
+
+    private lateinit var viewPager: ViewPager
+    private lateinit var pagerAdapter: MyPagerAdapter
+
+    private var state = "state";
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+       /////////////
+        //TODO: define viewpager
+        //TODO : but i dont know how to send data to fragment
+        viewPager = findViewById(R.id.viewpager)
+        //TODO: i put variables in  MyPagerAdapter but i dont know how to update and get them
+//        pagerAdapter = MyPagerAdapter(supportFragmentManager,titles,subtitles,iDs, temp, mLikes)
+        viewPager.adapter = pagerAdapter
+
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+            override fun onPageSelected(position: Int) {
+
+                //TODO: how to get new data ?????
+//                LoadPics(context, arrLikes).execute()
+            }
+
+        })
+        //////////////////
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.elevation = 2f
@@ -87,8 +123,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         switch = ImageView(this)
 
-        //TODO laod sate from SharedPref and set it into switch
-        switch?.setImageResource(R.drawable.autobg_active)
+        //TODO laod sate from SharedPref and set it into switch  :DONE  :)
+
+        if (containState()){
+            if (getparms() == "0") {
+                switchBackground(this, state)
+            }
+            if (getparms() == "1") {
+                switchBackground(this, state)
+            }
+        }else{
+            switch?.setImageResource(R.drawable.autobg_active)
+        }
+
         navigationView.menu.findItem(R.id.nav_auto_bg).actionView = switch
 
         btnUp = findViewById(R.id.btnUp)
@@ -236,6 +283,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 context.mNext = ""
                                 context.curGallery = v.tag as String
                                 LoadPics(context, arrLikes).execute()
+                                /////////////
+
+                                //////////////////
                                 //////////////////  mohammad /////////////////////
 //                                txtGallery.currentTextColor == Color.RED
                                 if (context.curGalleyTextView != null)
@@ -298,7 +348,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         subtitles.add(item.getStringSafe("subtitle"))
                         iDs.add(item.getStringSafe("pk"))
                     }
-                    val mRecyclerView = context.findViewById<RecyclerView>(R.id.grdCollection)
+
+            //TODO: i eleminate recyclerview nd put it in fragments so this part of code is in fragments
+                    /*val mRecyclerView = context.findViewById<RecyclerView>(R.id.grdCollection)
                     val llm = LinearLayoutManager(context)
                     mRecyclerView.layoutManager = llm
                     if (context.mAdapter == null) {
@@ -319,7 +371,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             }
                         })
                     } else
-                        context.mAdapter!!.setIDs(temp, titles, subtitles, iDs)
+                        context.mAdapter!!.setIDs(temp, titles, subtitles, iDs)*/
                 }
             }
         }
@@ -367,13 +419,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 state = data.getStringExtra("keyIdentifier")
-                //TODO save this state into SharedPreferences
-                if (state == "0") {
-                    switchBackground(this, state)
+
+                //TODO save this state into SharedPreferences   : DONE :)
+                /////////////////////
+                if (containState()){
+                    if (getparms() == "0") {
+                        switchBackground(this, state)
+                    }
+                    if (getparms() == "1") {
+                        switchBackground(this, state)
+                    }
                 }
-                if (state == "1") {
-                    switchBackground(this, state)
-                }
+                /////////////////////
             }
         }
     }
@@ -385,5 +442,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             switch?.setImageResource(R.drawable.double_down)
     }
 
+
+    private fun getparms():String{
+        val setting = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        return setting.getString("state", "")
+    }
+
+    private fun SetParam(value:String){
+        val setting = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val editor = setting.edit()
+        editor.putString(state,value )
+        editor.apply()
+
+    }
+
+    private fun containState ():Boolean{
+        val setting = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+       return setting.contains("state")
+    }
+
+
 }
+
 

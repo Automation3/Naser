@@ -3,19 +3,18 @@ package com.example.no1.photongallery
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.support.constraint.ConstraintLayout
+import android.preference.PreferenceManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.davemorrissey.labs.subscaleview.ImageSource
 import com.example.no1.photongallery.utils.OnImageClickedListener
 import com.mukesh.image_processing.ImageProcessor
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import java.nio.file.Files.size
 import java.util.*
+import kotlin.collections.HashSet
 
 class AutoBGIconAdapter(private val mContext: Context, private var mIDs: ArrayList<String>) : RecyclerView.Adapter<AutoBGIconAdapter.ImageHolder>() {
 
@@ -23,6 +22,16 @@ class AutoBGIconAdapter(private val mContext: Context, private var mIDs: ArrayLi
     var mListener: OnImageClickedListener? = null
     var mStates = arrayOfNulls<Int>(mIDs.size)
     val imageProcessor: ImageProcessor = ImageProcessor()
+
+    ////////
+    var set = HashSet<String>()
+//    Set<String> set = new HashSet<String>();
+//
+//    set.add("test 1")
+//    set.add("test 2")
+//    set.add("test 3")
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val itemView = LayoutInflater.from(mContext).inflate(R.layout.auto_bg_four_image,
                 parent, false)
@@ -53,14 +62,22 @@ class AutoBGIconAdapter(private val mContext: Context, private var mIDs: ArrayLi
         }
         imageView.tag = t
         Picasso.with(mContext).load(mIDs[position]).into(t)
-        //TODO also save this stuff into SharedPref
+        //TODO also save this stuff into SharedPref   : DONE :)
         imageView.setOnClickListener({
             if (mStates[position] == 0) {
                 mStates[position] = 1
                 imgTick.visibility = View.VISIBLE
+                ////////////////////////////
+                set.add(""+position)
+                SetParam(set)
+                ////////////////////////////
             } else {
                 mStates[position] = 0
                 imgTick.visibility = View.INVISIBLE
+                ////////////////////////////
+                set.remove(""+position)
+                SetParam(set)
+                ////////////////////////////
             }
         })
     }
@@ -105,14 +122,19 @@ class AutoBGIconAdapter(private val mContext: Context, private var mIDs: ArrayLi
         return array[rnd]
     }
 
-    fun array_of_clicked_item(){
 
 
+    private fun getparms():Set<String>{
+        val setting = PreferenceManager.getDefaultSharedPreferences(mContext)
+        return setting.getStringSet("set", null)
     }
 
+    private fun SetParam(value:HashSet<String>){
+        val setting = PreferenceManager.getDefaultSharedPreferences(mContext)
+        val editor = setting.edit()
+//        editor.putString("position",value )
+        editor.putStringSet("set",value )
+        editor.apply()
+    }
 
 }
-
-
-
-

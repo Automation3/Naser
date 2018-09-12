@@ -11,4 +11,8 @@
     <string name="payamak">لطفا کدی را که هم اکنون برایب شما پیامک شد </string>
     <string name="payamak2">در کادر زیر وارد نمایید</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

@@ -6,11 +6,13 @@ import android.app.PendingIntent
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -35,6 +37,12 @@ class AutoBackgroundActivity : AppCompatActivity() {
     var periodicTime = AlarmManager.INTERVAL_FIFTEEN_MINUTES
     ///////////////////////////////////////////////
 
+    private var myPreferences = "myPrefs"
+    private var EMPTY = ""
+    private var state = "state"
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auto_background)
@@ -46,8 +54,12 @@ class AutoBackgroundActivity : AppCompatActivity() {
         /////////////////// Mohammad////////////////////
         val textView2 = findViewById<TextView>(R.id.txtStatus)
         textView2.typeface = font
-        //TODO laod sate from SharedPref and set it into sw
+
         val sw = findViewById<SwitchCompat>(R.id.chkActive)
+        //TODO Load sate from SharedPref and set it into sw  : DONE  :)
+        if (getparms()=="1"){
+           sw.setChecked(true)
+        }
         sw?.setOnCheckedChangeListener({ _, isChecked ->
             val msg = if (isChecked) "فعال" else "غیر فعال"
             textView2.text = msg
@@ -173,14 +185,18 @@ class AutoBackgroundActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val sw = findViewById<SwitchCompat>(R.id.chkActive)
         val intent = Intent(this, MainActivity::class.java)
+
+
         if (sw.isChecked) {
             // To pass any data to next activity
+            SetParam("1")
             intent.putExtra("keyIdentifier", "1")
             // start your next activity
             setResult(RESULT_OK, intent);
             finish();
         } else {
             // To pass any data to next activity
+            SetParam("0")
             intent.putExtra("keyIdentifier", "0")
             // start your next activity
             setResult(RESULT_OK, intent);
@@ -215,5 +231,28 @@ class AutoBackgroundActivity : AppCompatActivity() {
         alarm.cancel(pIntent)
     }
 
+
+    /////////////////////
+ /*   private fun saveSharedPreferences(myValue:String){
+        val sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(state,myValue )
+        editor.apply()
+           Toast.makeText(this, "sharedpreferences", Toast.LENGTH_SHORT).show()
+    }*/
+
+
+    private fun getparms():String{
+        val setting = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        return setting.getString("state", "")
+    }
+
+   private fun SetParam(value:String){
+       val setting = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+       val editor = setting.edit()
+       editor.putString(state,value )
+       editor.apply()
+
+   }
 
 }

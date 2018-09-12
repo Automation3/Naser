@@ -1,23 +1,14 @@
 package com.example.no1.photongallery.utils
 
-import android.app.Activity
 import android.app.IntentService
 import android.app.ProgressDialog
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.PointF
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.widget.ImageView
-import com.davemorrissey.labs.subscaleview.ImageSource
-import com.example.no1.photongallery.AutoBackgroundActivity
-import com.example.no1.photongallery.ImageRecycleAdapter
-import com.example.no1.photongallery.MainActivity
+import android.preference.PreferenceManager
 import com.example.no1.photongallery.R
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -42,7 +33,7 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
             val params = ArrayList<NameValuePair>()
 
             val jParser = JSONParser()
-            var url = parent.get()?.getString(R.string.server_address) + "/api/get-random-photo/?gallery=1"
+            val url = parent.get()?.getString(R.string.server_address) + "/api/get-random-photo/?gallery=1"
 
             result = MyJsonObject(jParser.makeHttpRequest(url, "GET", params, parent.get()))
             if (result != null && !result!!.isNull) {
@@ -74,6 +65,23 @@ class AutoChangeBackgroundImage : IntentService("AutoChangeBackgroundImage") {
             myWallpaperManager.setBitmap(bitmap);
         }
     }
+
+
+    //TODO:  get selected gallery and send to server
+
+
+    private fun getparms():Set<String>{
+        val setting = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        return setting.getStringSet("set", null)
+    }
+
+    private fun SetParam(value:HashSet<String>){
+        val setting = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val editor = setting.edit()
+        editor.putStringSet("set",value )
+        editor.apply()
+    }
+
 }
 
 
